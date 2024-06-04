@@ -25,17 +25,17 @@ it("creates a child node", () => {
   const node = new TreeNode();
   node.appendChild("test");
 
-  expect(node.children.get(0).value).toBe("test");
+  expect(node.children[0].value).toBe("test");
 });
 
 it("measures depth", () => {
   const depth0 = new TreeNode();
   depth0.appendChild("test");
-  const depth1 = depth0.children.get(0);
+  const depth1 = depth0.children[0];
   depth1.appendChild("test2");
-  const depth2 = depth1.children.get(0);
+  const depth2 = depth1.children[0];
   depth2.appendChild("test3");
-  const depth3 = depth2.children.get(0);
+  const depth3 = depth2.children[0];
   depth3.appendChild("test4");
 
   expect(depth3.depth).toBe(3);
@@ -49,17 +49,87 @@ it("converts to YAML", () => {
   const itemii = itemA.appendChild("ii");
   const itemB = itemI.appendChild("B");
 
-  console.log(tree);
-  console.log(tree.root);
-  console.log(tree.root.children);
-  console.log(tree.root.children.get(0));
-  console.log(tree.root.children.get(0).children.get(0));
-
   const expected = `- ROOT:
   - I:
     - A:
       - i:
       - ii:
+    - B:
+`;
+  expect(tree.toYaml()).toBe(expected);
+});
+
+it("moves node up", () => {
+  const tree = new Tree();
+  const itemI = tree.appendChild("I");
+  const itemA = itemI.appendChild("A");
+  const itemi = itemA.appendChild("i");
+  const itemii = itemA.appendChild("ii");
+  const itemB = itemI.appendChild("B");
+  tree.moveUp(itemii.key);
+
+  const expected = `- ROOT:
+  - I:
+    - A:
+      - ii:
+      - i:
+    - B:
+`;
+  expect(tree.toYaml()).toBe(expected);
+});
+
+it("moves node down", () => {
+  const tree = new Tree();
+  const itemI = tree.appendChild("I");
+  const itemA = itemI.appendChild("A");
+  const itemi = itemA.appendChild("i");
+  const itemii = itemA.appendChild("ii");
+  const itemB = itemI.appendChild("B");
+  tree.moveDown(itemi.key);
+
+  const expected = `- ROOT:
+  - I:
+    - A:
+      - ii:
+      - i:
+    - B:
+`;
+  expect(tree.toYaml()).toBe(expected);
+});
+
+it("moves node left", () => {
+  const tree = new Tree();
+  const itemI = tree.appendChild("I");
+  const itemA = itemI.appendChild("A");
+  const itemi = itemA.appendChild("i");
+  const itemii = itemA.appendChild("ii");
+  const itemB = itemI.appendChild("B");
+  tree.outdent(itemA.key);
+
+  const expected = `- ROOT:
+  - I:
+    - B:
+  - A:
+    - i:
+    - ii:
+`;
+  expect(tree.toYaml()).toBe(expected);
+});
+
+it("moves node right", () => {
+  const tree = new Tree();
+  const itemI = tree.appendChild("I");
+  const itemA = itemI.appendChild("A");
+  const itemi = itemA.appendChild("i");
+  const itemii = itemA.appendChild("ii");
+  const itemB = itemI.appendChild("B");
+  tree.indent(itemii.key);
+
+  const expected = `- ROOT:
+  - I:
+    - A:
+      - i:
+        - ii:
     - B:
 `;
   expect(tree.toYaml()).toBe(expected);
