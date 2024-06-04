@@ -1,19 +1,11 @@
 // src/Hierarchy.js
-import React, { useState } from "react";
+import React, { Children, useState } from "react";
 import { fromJS, List } from "immutable";
 import Node from "./Node";
+import { Tree, TreeNode } from "./tree";
 
 const Hierarchy = () => {
-  const [nodes, setNodes] = useState(
-    fromJS([
-      { id: 1, text: "Node 1", children: [] },
-      {
-        id: 2,
-        text: "Node 2",
-        children: [{ id: 3, text: "Node 3", children: [] }],
-      },
-    ])
-  );
+  const [nodes, setNodes] = useState(new TreeNode());
 
   const moveNode = (dragIndex, hoverIndex) => {
     const draggedNode = nodes.get(dragIndex);
@@ -31,6 +23,7 @@ const Hierarchy = () => {
           key={node.get("id")}
           node={node.set("index", index)}
           moveNode={moveNode}
+          depth={0}
         />
       ))}
     </div>

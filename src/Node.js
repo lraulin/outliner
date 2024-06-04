@@ -3,7 +3,7 @@ import React from "react";
 import { useDrag, useDrop } from "react-dnd";
 import { ItemTypes } from "./constants";
 
-const Node = ({ node, moveNode }) => {
+const Node = ({ node, moveNode, depth }) => {
   const ref = React.useRef(null);
 
   const [, drop] = useDrop({
@@ -53,8 +53,12 @@ const Node = ({ node, moveNode }) => {
   drag(drop(ref));
 
   return (
-    <div ref={ref} style={{ opacity: isDragging ? 0.5 : 1 }}>
-      {node.get("text")}
+    <div
+      ref={ref}
+      className="card"
+      style={{ opacity: isDragging ? 0.5 : 1, margin: ".5em" }}
+    >
+      {"*".repeat(depth) + " " + node.get("text")}
       {node.get("children") &&
         node
           .get("children")
@@ -63,6 +67,7 @@ const Node = ({ node, moveNode }) => {
               key={childNode.get("id")}
               node={childNode.set("index", index)}
               moveNode={moveNode}
+              depth={depth + 1}
             />
           ))}
     </div>
