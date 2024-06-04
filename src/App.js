@@ -1,13 +1,62 @@
-// src/App.js
-import React from "react";
-import Hierarchy from "./Hierarchy";
+import React, { useState } from "react";
+import { TreeProvider, useTree, useTreeDispatch } from "./TreeContext";
+import Node from "./Node";
+import Button from "react-bootstrap/Button";
+import Form from "react-bootstrap/Form";
+import Modal from "react-bootstrap/Modal";
 
 const App = () => {
+  const [show, setShow] = useState(false);
+  const [value, setValue] = useState("");
+  const [key, setKey] = useState(null);
+  const dispatch = useTreeDispatch();
+
+  const handleClose = () => setShow(false);
+  const handleShow = (key) => {
+    setKey(key);
+    setShow(true);
+  };
+  const handleSave = () => {
+    dispatch({ type: "append_child", key, value });
+    setValue("");
+    setKey(null);
+    setShow(false);
+  };
+
+  const tree = useTree();
   return (
-    <div>
+    <>
       <h1>Hierarchical Outliner</h1>
-      <Hierarchy />
-    </div>
+      <Node node={tree.root} handleShow={handleShow} />
+
+      <Modal show={show} onHide={handleClose}>
+        <Modal.Header closeButton>
+          <Modal.Title>Modal heading</Modal.Title>
+        </Modal.Header>
+        <Modal.Body>
+          <Form>
+            <Form.Group className="mb-3" controlId="exampleForm.ControlInput1">
+              <Form.Label>Text</Form.Label>
+              <Form.Control
+                type="text"
+                placeholder="..."
+                value={value}
+                onChange={(e) => setValue(e.target.value)}
+                autoFocus
+              />
+            </Form.Group>
+          </Form>
+        </Modal.Body>
+        <Modal.Footer>
+          <Button variant="secondary" onClick={handleClose}>
+            Close
+          </Button>
+          <Button variant="primary" onClick={handleSave}>
+            Save Changes
+          </Button>
+        </Modal.Footer>
+      </Modal>
+    </>
   );
 };
 

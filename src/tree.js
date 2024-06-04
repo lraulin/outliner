@@ -30,6 +30,7 @@ export class TreeNode {
   }
 
   set siblings(arr) {
+    if (!Array.isArray(arr)) throw new Error(arr + " is not an array");
     this.parent.children = arr;
   }
 
@@ -84,6 +85,8 @@ export class TreeNode {
    * @param {string | TreeNode} child
    */
   appendChild(child) {
+    console.log("append child");
+    console.log(child);
     if (typeof child === "string") {
       child = new TreeNode({ value: child });
     }
@@ -135,13 +138,9 @@ export class Tree {
 
   insert(parentNodeKey, value) {
     const parentNode = this.find(parentNodeKey);
-    if (parentNode) {
-      parentNode.children = parentNode.children.push(
-        new TreeNode({ value, parentNode })
-      );
-      return true;
-    }
-    return false;
+    const node = new TreeNode({ value, parentNode });
+    parentNode.appendChild(node);
+    return this;
   }
 
   /**
@@ -224,6 +223,7 @@ export class Tree {
     const before = node.siblings.slice(0, node.previousSibling.index);
     const after = node.siblings.slice(node.index + 1);
     node.parent.children = [...before, node, node.previousSibling, ...after];
+    return this;
   }
 
   moveDown(key) {
@@ -233,6 +233,7 @@ export class Tree {
     const before = node.parent.children.slice(0, node.index);
     const after = node.parent.children.slice(node.nextSibling.index + 1);
     node.parent.children = [...before, node.nextSibling, node, ...after];
+    return this;
   }
 
   indent(key) {
@@ -242,6 +243,7 @@ export class Tree {
     const previousSibling = node.previousSibling;
     node.remove();
     previousSibling.appendChild(node);
+    return this;
   }
 
   outdent(key) {
@@ -251,5 +253,6 @@ export class Tree {
     const previousParent = node.parent;
     node.remove();
     previousParent.insertSibling(node);
+    return this;
   }
 }
