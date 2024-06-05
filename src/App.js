@@ -4,6 +4,8 @@ import Node from "./Node";
 import Button from "react-bootstrap/Button";
 import Form from "react-bootstrap/Form";
 import Modal from "react-bootstrap/Modal";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { faPlusSquare } from "@fortawesome/free-solid-svg-icons";
 
 const App = () => {
   const [show, setShow] = useState(false);
@@ -27,7 +29,12 @@ const App = () => {
   return (
     <>
       <h1>Hierarchical Outliner</h1>
-      <Node node={tree.root} handleShow={handleShow} />
+      {tree.root.children.map((n) => (
+        <Node node={n} handleShow={handleShow} />
+      ))}
+      <Button variant="primary" onClick={() => handleShow(tree.root.key)}>
+        <FontAwesomeIcon icon={faPlusSquare} />
+      </Button>
 
       <Modal show={show} onHide={handleClose}>
         <Modal.Header closeButton>
