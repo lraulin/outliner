@@ -3,7 +3,7 @@ import { Tree, TreeNode } from "./tree";
 
 /**
  * @typedef {Object} Action
- * @property {"append_child" | "delete"} type
+ * @property {"append_child" | "delete"| "indent" | "outdent" | "up" | "down"} type
  * @property {number} key
  * @property {string | undefined} value
  */
@@ -53,6 +53,18 @@ function TreeReducer(tree, action) {
     }
     case "delete": {
       return tree.remove(action.key);
+    }
+    case "indent": {
+      return tree.indent(action.key);
+    }
+    case "outdent": {
+      return tree.outdent(action.key);
+    }
+    case "up": {
+      return tree.moveUp(action.key);
+    }
+    case "down": {
+      return tree.moveDown(action.key);
     }
     default: {
       throw Error("Unknown action: " + action.type);

@@ -231,7 +231,7 @@ export class Tree {
    */
   moveUp(key) {
     const node = this.find(key);
-    if (node.isFirst) return;
+    if (node.isFirst) return this;
 
     const before = node.siblings.slice(0, node.previousSibling.index);
     const after = node.siblings.slice(node.index + 1);
@@ -247,7 +247,7 @@ export class Tree {
    */
   moveDown(key) {
     const node = this.find(key);
-    if (node.isLast) return;
+    if (node.isLast) return this;
 
     const before = node.parent.children.slice(0, node.index);
     const after = node.parent.children.slice(node.nextSibling.index + 1);
@@ -263,7 +263,7 @@ export class Tree {
    */
   indent(key) {
     const node = this.find(key);
-    if (node.isFirst) return;
+    if (node.isFirst) return this;
 
     const previousSibling = node.previousSibling;
     node.remove();
@@ -279,7 +279,7 @@ export class Tree {
    */
   outdent(key) {
     const node = this.find(key);
-    if (node.isRoot || node.parent.isRoot) return;
+    if (node.isRoot || node.parent.isRoot) return this;
 
     const previousParent = node.parent;
     node.remove();

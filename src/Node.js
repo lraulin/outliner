@@ -1,5 +1,4 @@
-import React, { Component } from "react";
-import { TreeNode } from "./tree";
+import React from "react";
 import Card from "react-bootstrap/Card";
 import ListGroup from "react-bootstrap/ListGroup";
 import Button from "react-bootstrap/Button";
@@ -30,6 +29,18 @@ const Node = ({ node, handleShow }) => {
   const handleDelete = (key) => {
     dispatch({ type: "delete", key: node.key });
   };
+  const handleUp = (key) => {
+    dispatch({ type: "up", key: node.key });
+  };
+  const handleDown = (key) => {
+    dispatch({ type: "down", key: node.key });
+  };
+  const handleIndent = (key) => {
+    dispatch({ type: "indent", key: node.key });
+  };
+  const handleOutdent = (key) => {
+    dispatch({ type: "outdent", key: node.key });
+  };
 
   return (
     <Card style={{ width: "18rem" }}>
@@ -46,16 +57,25 @@ const Node = ({ node, handleShow }) => {
         <ButtonToolbar aria-label="Toolbar with button groups">
           <ButtonGroup size="sm" aria-label="Buttons to move item">
             <Button variant="secondary">
-              <FontAwesomeIcon icon={faArrowAltCircleUp} />
+              <FontAwesomeIcon icon={faArrowAltCircleUp} onClick={handleUp} />
             </Button>
             <Button variant="secondary">
-              <FontAwesomeIcon icon={faArrowAltCircleDown} />
+              <FontAwesomeIcon
+                icon={faArrowAltCircleDown}
+                onClick={handleDown}
+              />
             </Button>
             <Button variant="secondary">
-              <FontAwesomeIcon icon={faArrowAltCircleLeft} />
+              <FontAwesomeIcon
+                icon={faArrowAltCircleLeft}
+                onClick={handleOutdent}
+              />
             </Button>
             <Button variant="secondary">
-              <FontAwesomeIcon icon={faArrowAltCircleRight} />
+              <FontAwesomeIcon
+                icon={faArrowAltCircleRight}
+                onClick={handleIndent}
+              />
             </Button>
           </ButtonGroup>
           <ButtonGroup size="sm" aria-label="Buttons to add or delete item">

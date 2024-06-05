@@ -30,7 +30,7 @@ const App = () => {
     <>
       <h1>Hierarchical Outliner</h1>
       {tree.root.children.map((n) => (
-        <Node node={n} handleShow={handleShow} />
+        <Node node={n} handleShow={handleShow} key={n.key} />
       ))}
       <Button variant="primary" onClick={() => handleShow(tree.root.key)}>
         <FontAwesomeIcon icon={faPlusSquare} />
