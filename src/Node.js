@@ -12,6 +12,7 @@ import {
   faArrowAltCircleRight,
 } from "@fortawesome/free-solid-svg-icons";
 import { ButtonGroup, ButtonToolbar } from "react-bootstrap";
+import { useTreeDispatch } from "./TreeContext";
 
 /**
  * Description placeholder
@@ -20,14 +21,23 @@ import { ButtonGroup, ButtonToolbar } from "react-bootstrap";
  * @param {TreeNode} param0.node
  * @returns {*}
  */
-const Node = ({ node, handleShow, handleDelete }) => {
+const Node = ({ node, handleShow }) => {
+  if (!node) {
+    throw new Error("node is " + node);
+  }
+  const dispatch = useTreeDispatch();
+
+  const handleDelete = (key) => {
+    dispatch({ type: "delete", key: node.key });
+  };
+
   return (
     <Card style={{ width: "18rem" }}>
       <Card.Header>{node?.value}</Card.Header>
       <ListGroup variant="flush">
-        {node.hasChildren &&
+        {node?.hasChildren &&
           node.children.map((n) => (
-            <ListGroup.Item>
+            <ListGroup.Item key={n.key}>
               <Node node={n} handleShow={handleShow} />
             </ListGroup.Item>
           ))}

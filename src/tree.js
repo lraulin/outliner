@@ -1,9 +1,9 @@
 let count = 0;
 
 export class TreeNode {
-  constructor({ value, parent } = {}) {
+  constructor({ key = null, value = "", parent = null, children = [] } = {}) {
     /** @type {number} */
-    this.key = count++;
+    this.key = key ?? count++;
     /** @type {string} */
     this.value = value ?? this.key.toString();
     /** @type {TreeNode} */
@@ -115,7 +115,7 @@ export class TreeNode {
 
 export class Tree {
   constructor() {
-    this.root = new TreeNode({ value: "ROOT" });
+    this.root = new TreeNode({ value: "" });
   }
 
   *preOrderTraversal(node = this.root) {
@@ -136,6 +136,13 @@ export class Tree {
     yield node;
   }
 
+  /**
+   * Description placeholder
+   *
+   * @param {number} parentNodeKey
+   * @param {string} value
+   * @returns {this}
+   */
   insert(parentNodeKey, value) {
     const parentNode = this.find(parentNodeKey);
     const node = new TreeNode({ value, parentNode });
@@ -156,6 +163,7 @@ export class Tree {
       const siblingIndex = siblingNode.parent.children.indexOf(siblingNode);
       siblingNode.parent.insertChild(siblingIndex, new TreeNode({ value }));
     }
+    return this;
   }
 
   /**
@@ -171,17 +179,16 @@ export class Tree {
    * Description placeholder
    *
    * @param {number} key
-   * @returns {boolean}
+   * @returns {Tree}
    */
   remove(key) {
     for (let node of this.preOrderTraversal()) {
       const filtered = node.children.filter((c) => c.key !== key);
       if (filtered.length !== node.children.length) {
         node.children = filtered;
-        return true;
       }
     }
-    return false;
+    return this.clone();
   }
 
   /**
@@ -216,6 +223,12 @@ export class Tree {
     return yaml;
   }
 
+  /**
+   * Description placeholder
+   *
+   * @param {number} key
+   * @returns {this}
+   */
   moveUp(key) {
     const node = this.find(key);
     if (node.isFirst) return;
@@ -223,9 +236,15 @@ export class Tree {
     const before = node.siblings.slice(0, node.previousSibling.index);
     const after = node.siblings.slice(node.index + 1);
     node.parent.children = [...before, node, node.previousSibling, ...after];
-    return this;
+    return this.clone();
   }
 
+  /**
+   * Description placeholder
+   *
+   * @param {number} key
+   * @returns {this}
+   */
   moveDown(key) {
     const node = this.find(key);
     if (node.isLast) return;
@@ -233,9 +252,15 @@ export class Tree {
     const before = node.parent.children.slice(0, node.index);
     const after = node.parent.children.slice(node.nextSibling.index + 1);
     node.parent.children = [...before, node.nextSibling, node, ...after];
-    return this;
+    return this.clone();
   }
 
+  /**
+   * Description placeholder
+   *
+   * @param {number} key
+   * @returns {this}
+   */
   indent(key) {
     const node = this.find(key);
     if (node.isFirst) return;
@@ -243,9 +268,15 @@ export class Tree {
     const previousSibling = node.previousSibling;
     node.remove();
     previousSibling.appendChild(node);
-    return this;
+    return this.clone();
   }
 
+  /**
+   * Description placeholder
+   *
+   * @param {number} key
+   * @returns {this}
+   */
   outdent(key) {
     const node = this.find(key);
     if (node.isRoot || node.parent.isRoot) return;
@@ -253,6 +284,17 @@ export class Tree {
     const previousParent = node.parent;
     node.remove();
     previousParent.insertSibling(node);
-    return this;
+    return this.clone();
+  }
+
+  /**
+   * Creates a shallow copy
+   *
+   * @returns {Tree}
+   */
+  clone() {
+    const tree = new Tree();
+    tree.root = this.root;
+    return tree;
   }
 }
